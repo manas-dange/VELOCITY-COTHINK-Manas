@@ -83,3 +83,4 @@ export const SYNTHETIC_SEED_BRIEFS: Omit<SavedBrief, "id" | "createdAt">[] = [
     isSyntheticSeed: true,
   },
 ];
+

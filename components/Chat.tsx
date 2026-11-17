@@ -67,6 +67,31 @@ export function Chat({
                   {turn.rationale}
                 </div>
               )}
+
+              {/* Quick-reply Answer Chips (Choice A: 1-Tap Direct Submission) */}
+              {!turn.answer && turn.suggestedOptions && turn.suggestedOptions.length > 0 && !loading && (
+                <div className="space-y-1.5 pt-2 w-full">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block px-1">
+                    ⚡ Quick Options (tap to submit):
+                  </span>
+                  <div className="flex flex-col gap-1.5">
+                    {turn.suggestedOptions.map((opt, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => onAnswer(opt)}
+                        disabled={loading}
+                        className="text-left text-xs text-indigo-900 bg-indigo-50/70 hover:bg-indigo-100 border border-indigo-200/70 hover:border-indigo-300 rounded-xl px-3 py-2 transition-colors font-medium cursor-pointer flex items-center justify-between group shadow-xs"
+                      >
+                        <span className="leading-snug">{opt}</span>
+                        <span className="text-indigo-400 group-hover:text-indigo-600 text-[10px] font-bold shrink-0 ml-2">
+                          Send →
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* User Answer (if answered) */}

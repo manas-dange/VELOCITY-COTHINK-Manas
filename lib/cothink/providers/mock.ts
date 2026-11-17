@@ -41,12 +41,61 @@ export class MockProvider implements LLMProvider {
       brief
     );
 
+    const suggestedOptions = this.getSuggestedOptions(targetDimension, snippet, brief);
+
     return {
       action: "ask",
       question,
       rationale: `Probing: ${this.getDimensionLabel(targetDimension)} - ${rationale}`,
       targetDimension,
+      suggestedOptions,
     };
+  }
+
+  private getSuggestedOptions(
+    dim: Dimension,
+    snippet: string,
+    brief: Brief
+  ): string[] {
+    switch (dim) {
+      case "audience":
+        return [
+          "College & university students living on campus",
+          "Early-career professionals living paycheck-to-paycheck",
+          "Independent freelancers with irregular monthly income",
+        ];
+      case "problem":
+        return [
+          "Running out of funds unexpectedly before the end of the month",
+          "No simple way to track daily safe-to-spend allowance without spreadsheets",
+          "Existing tools are overcrowded with ads and excessive friction",
+        ];
+      case "evidence":
+        return [
+          "Conducted 1:1 interviews with 15+ potential users",
+          "My own daily lived struggle and discussions with peers",
+          "Frequent active complaints observed on Reddit and niche forums",
+        ];
+      case "constraints":
+        return [
+          "Must launch an MVP within 6 weeks with zero subscription fee",
+          "Bootstrapped budget with a lightweight mobile-first stack",
+          "Must operate under strict local privacy and security boundaries",
+        ];
+      case "risk":
+        return [
+          "Users might lose motivation and abandon after the first week",
+          "Friction in logging inputs could lead to incomplete data",
+          "High competition from established incumbents",
+        ];
+      case "goal":
+      default:
+        return [
+          "Reach first 500 active beta users with high retention",
+          "Validate core problem-solution fit before writing backend code",
+          "Deliver a high-impact prototype to validate with real users",
+        ];
+    }
   }
 
   private getDimensionLabel(dim: Dimension): string {

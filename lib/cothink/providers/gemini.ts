@@ -79,7 +79,10 @@ RULES:
    Reference specific details the user previously gave, but keep the question focused directly on filling the missing checkbox.
    Ask exactly ONE concise question.
 
-3. STOP RULE:
+3. QUICK-REPLY OPTIONS:
+   Propose 3 concise, realistic answer options (under 10 words each) tailored to the user's idea as suggestedOptions that the user can tap to answer immediately.
+
+4. STOP RULE:
    If all key dimensions are covered or threshold is reached, set "action": "summarize".
 
 Output strictly valid JSON matching this schema:
@@ -88,6 +91,11 @@ Output strictly valid JSON matching this schema:
   "question": "your focused question asking explicitly for the missing dimension",
   "rationale": "Probing: ${targetDimension} - reason",
   "targetDimension": "${targetDimension}",
+  "suggestedOptions": [
+    "concise answer option 1",
+    "concise answer option 2",
+    "concise answer option 3"
+  ],
   "briefPatch": {
     "context": [
       { "text": "fact extracted from user words", "dimension": "audience | problem | evidence" }

@@ -102,6 +102,7 @@ export async function startSession(
       question: questionText,
       targetDimension: response.targetDimension || targetDim,
       rationale: questionRationale,
+      suggestedOptions: response.suggestedOptions,
       timestamp: Date.now(),
     };
 
@@ -121,6 +122,7 @@ export async function startSession(
         text: questionText,
         rationale: questionRationale,
         targetDimension: turn1.targetDimension,
+        suggestedOptions: turn1.suggestedOptions,
       },
       clarity: initialClarity,
     };
@@ -194,6 +196,7 @@ export async function submitAnswer(
       question: response.question || "Who specifically is this for and what problem does it solve?",
       targetDimension: response.targetDimension || targetDim,
       rationale: response.rationale || `Probing: ${targetDim}`,
+      suggestedOptions: response.suggestedOptions,
       timestamp: Date.now(),
     };
 
@@ -215,6 +218,7 @@ export async function submitAnswer(
         text: nextTurn.question,
         rationale: nextTurn.rationale,
         targetDimension: nextTurn.targetDimension,
+        suggestedOptions: nextTurn.suggestedOptions,
       },
       clarity,
     };
@@ -324,6 +328,7 @@ export async function submitAnswer(
     question: response.question || "Could you elaborate further on your constraints and assumptions?",
     targetDimension: response.targetDimension || nextTargetDim,
     rationale: response.rationale || `Probing: ${nextTargetDim}`,
+    suggestedOptions: response.suggestedOptions,
     timestamp: Date.now(),
   };
 
@@ -345,6 +350,7 @@ export async function submitAnswer(
       text: nextTurn.question,
       rationale: nextTurn.rationale,
       targetDimension: nextTurn.targetDimension,
+      suggestedOptions: nextTurn.suggestedOptions,
     },
     clarity,
   };

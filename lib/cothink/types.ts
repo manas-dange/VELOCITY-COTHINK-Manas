@@ -74,6 +74,7 @@ export interface Turn {
   answer?: string;
   targetDimension?: Dimension;
   rationale?: string;
+  suggestedOptions?: string[];
   timestamp: number;
 }
 
@@ -91,6 +92,7 @@ export type QuestionResult = {
   text: string;
   rationale?: string;
   targetDimension?: Dimension;
+  suggestedOptions?: string[];
 };
 
 export type SummaryResult = {
@@ -196,6 +198,7 @@ export interface LLMResponsePayload {
   question?: string;
   rationale?: string;
   targetDimension?: Dimension;
+  suggestedOptions?: string[];
   briefPatch?: {
     goal?: string;
     context?: Array<{ text: string; dimension: Dimension }>;

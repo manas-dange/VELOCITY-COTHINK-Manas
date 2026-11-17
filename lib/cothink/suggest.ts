@@ -104,3 +104,4 @@ export function getGhostSuggestion(
 
   return null;
 }
+
