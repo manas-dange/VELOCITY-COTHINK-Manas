@@ -6,6 +6,8 @@
 
 ---
 
+Loom Link : https://www.loom.com/share/7dceaadc83d94322bac8c843dbd617ac
+
 ## 🌟 Signature Feature: The Clarity Score
 
 The **Clarity Score** is a real-time, deterministic 0–100 meter that quantifies how concrete and specific a user's intent has become across six foundational dimensions.
