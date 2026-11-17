@@ -8,6 +8,26 @@
 
 Loom Link : https://www.loom.com/share/7dceaadc83d94322bac8c843dbd617ac
 
+---
+
+## 📱 Product Walkthrough & UI Flow
+
+The mobile-first glassmorphic UI guides the user through the entire intent clarification lifecycle:
+
+| 1. Intake & Starter Screen | 2. Saved Briefs & Storage |
+|:---:|:---:|
+| <img src="docs/images/01-intake-screen.jpg" width="300" alt="1. Intake Screen" /><br/>*Cute companion mascot, starter cards, and ghost-text autocomplete.* | <img src="docs/images/02-saved-briefs.jpg" width="300" alt="2. Saved Briefs" /><br/>*Zero-server privacy: briefs stored in browser localStorage.* |
+
+| 3. Adaptive Dialogue & Live Progress | 4. Deterministic Clarity Breakdown |
+|:---:|:---:|
+| <img src="docs/images/03-adaptive-dialogue.jpg" width="300" alt="3. Adaptive Dialogue" /><br/>*Challenges assumptions one question at a time with 1-tap quick replies.* | <img src="docs/images/04-clarity-breakdown.jpg" width="300" alt="4. Clarity Breakdown" /><br/>*Expandable 6-dimension evaluation matrix computed 100% in code.* |
+
+| 5. Final Grounded Prompt Synthesis |
+|:---:|
+| <img src="docs/images/05-final-prompt.jpg" width="340" alt="5. Final Prompt" /><br/>*Production-ready prompt with grounded brief facts and advisory methodologies.* |
+
+---
+
 ## 🌟 Signature Feature: The Clarity Score
 
 The **Clarity Score** is a real-time, deterministic 0–100 meter that quantifies how concrete and specific a user's intent has become across six foundational dimensions.

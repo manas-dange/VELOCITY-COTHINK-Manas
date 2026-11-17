@@ -47,3 +47,4 @@ export function MascotAvatar({ className = "w-7 h-7" }: { className?: string }) 
     </div>
   );
 }
+
