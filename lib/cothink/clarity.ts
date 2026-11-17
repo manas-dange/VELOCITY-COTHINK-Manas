@@ -1,0 +1,2 @@
+// Clarity scorer stub
+export {};

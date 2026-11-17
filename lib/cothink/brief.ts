@@ -1,0 +1,2 @@
+// Brief model stub
+export {};
