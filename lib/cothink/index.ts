@@ -1,7 +1,7 @@
 // CoThink Public API
 // Module independence: Everything under lib/cothink/ works with zero imports from app/, components/, or hooks/
 
-import { getProvider } from "./providers";
+import { getProvider } from "./providers/index";
 import * as sessionModule from "./session";
 import {
   ConfirmBriefInput,
@@ -21,7 +21,7 @@ import {
 } from "./types";
 
 export * from "./types";
-export * from "./providers";
+export * from "./providers/index";
 export { computeClarityScore, chooseTargetDimension } from "./clarity";
 export { selectExpert } from "./expertSelector";
 export { buildFinalPrompt } from "./promptBuilder";

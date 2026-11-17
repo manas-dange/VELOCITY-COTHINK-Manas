@@ -65,15 +65,15 @@ export class MockProvider implements LLMProvider {
     if (!text) return "this initiative";
     // Strip common filler prefixes
     const clean = text
-      .replace(/^(i want to|i am trying to|we need to|i would like to|i'm building|i plan to)\s+/i, "")
+      .replace(/^(i want to|i am trying to|we need to|i would like to|i'm building|i plan to|it is specifically for|it is for|this is for|targeted at|focused on|mainly for)\s+/i, "")
       .trim();
 
-    // If short, return cleaned text; otherwise take first 6-8 words
+    // If moderate length, keep the whole phrase; otherwise take first 10 words
     const words = clean.split(/\s+/);
-    if (words.length <= 6) {
+    if (words.length <= 12) {
       return clean;
     }
-    return words.slice(0, 5).join(" ") + "...";
+    return words.slice(0, 10).join(" ") + "...";
   }
 
   private generateTargetedQuestion(
