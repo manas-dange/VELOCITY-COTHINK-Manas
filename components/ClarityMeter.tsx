@@ -48,8 +48,8 @@ export function ClarityMeter({ clarity, pinned = false }: ClarityMeterProps) {
 
   return (
     <div
-      className={`border rounded-xl bg-white shadow-xs p-3 transition-all duration-200 ${
-        pinned ? "sticky top-0 z-20 mb-3 border-indigo-100 bg-white/95 backdrop-blur-xs" : ""
+      className={`border rounded-xl bg-white shadow-sm p-3 transition-all duration-200 ${
+        pinned ? "sticky top-0 z-20 mb-3 border-indigo-100 bg-white/95 backdrop-blur-sm" : ""
       }`}
     >
       {/* Header Row: Score & Delta */}

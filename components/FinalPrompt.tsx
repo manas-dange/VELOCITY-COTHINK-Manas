@@ -79,7 +79,7 @@ export function FinalPrompt({ prompt, meta, onReset }: FinalPromptProps) {
           <button
             type="button"
             onClick={handleCopy}
-            className="px-2.5 py-1 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 text-white rounded-md text-xs font-medium transition-colors cursor-pointer flex items-center gap-1 shadow-xs"
+            className="px-2.5 py-1 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 text-white rounded-md text-xs font-medium transition-colors cursor-pointer flex items-center gap-1 shadow-sm"
           >
             <span>{copied ? "✓ Copied!" : "📋 Copy Prompt"}</span>
           </button>
@@ -88,7 +88,7 @@ export function FinalPrompt({ prompt, meta, onReset }: FinalPromptProps) {
           readOnly
           value={prompt}
           rows={14}
-          className="w-full font-mono text-xs text-slate-800 bg-slate-900/5 border border-slate-300 rounded-b-xl p-3 focus:outline-hidden resize-none leading-relaxed select-all"
+          className="w-full font-mono text-xs text-slate-800 bg-slate-900/5 border border-slate-300 rounded-b-xl p-3 focus:outline-none resize-none leading-relaxed select-all"
         />
       </div>
 

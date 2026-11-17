@@ -90,13 +90,13 @@ export default function Home() {
                   disabled={loading}
                   rows={3}
                   placeholder="e.g. I want to build a budgeting app..."
-                  className="w-full border border-slate-300 rounded-xl p-3 text-sm focus:outline-hidden focus:ring-2 focus:ring-indigo-500 resize-none shadow-2xs"
+                  className="w-full border border-slate-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none shadow-sm"
                   autoFocus
                 />
                 <button
                   type="submit"
                   disabled={loading || !initialInput.trim()}
-                  className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-sm font-semibold shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-sm font-semibold shadow-sm flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <span>{loading ? "Analyzing..." : "Start CoThinking →"}</span>
                 </button>

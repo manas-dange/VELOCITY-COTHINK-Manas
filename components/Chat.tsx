@@ -59,7 +59,7 @@ export function Chat({
                   </span>
                 )}
               </div>
-              <div className="bg-slate-100 border border-slate-200/80 text-slate-800 text-sm rounded-2xl rounded-tl-xs px-3.5 py-2.5 shadow-2xs leading-relaxed">
+              <div className="bg-slate-100 border border-slate-200/80 text-slate-800 text-sm rounded-2xl rounded-tl-sm px-3.5 py-2.5 shadow-sm leading-relaxed">
                 {turn.question}
               </div>
               {turn.rationale && (
@@ -110,14 +110,14 @@ export function Chat({
                         type="button"
                         onClick={() => handleSaveEdit(turn.id)}
                         disabled={loading || !editText.trim()}
-                        className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-xs font-medium shadow-2xs disabled:opacity-50"
+                        className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-xs font-medium shadow-sm disabled:opacity-50"
                       >
                         {loading ? "Updating..." : "Save Correction"}
                       </button>
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-indigo-600 text-white text-sm rounded-2xl rounded-tr-xs px-3.5 py-2.5 shadow-2xs leading-relaxed">
+                  <div className="bg-indigo-600 text-white text-sm rounded-2xl rounded-tr-sm px-3.5 py-2.5 shadow-sm leading-relaxed">
                     {turn.answer}
                   </div>
                 )}
@@ -135,7 +135,7 @@ export function Chat({
       </div>
 
       {/* Answer Input & Actions */}
-      <div className="sticky bottom-0 bg-white/95 backdrop-blur-xs pt-2 border-t border-slate-100 space-y-2">
+      <div className="sticky bottom-0 bg-white/95 backdrop-blur-sm pt-2 border-t border-slate-100 space-y-2">
         <form onSubmit={handleSubmit} className="flex gap-2">
           <input
             type="text"
@@ -143,12 +143,12 @@ export function Chat({
             onChange={(e) => setCurrentInput(e.target.value)}
             disabled={loading}
             placeholder="Type your response..."
-            className="flex-1 border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50"
+            className="flex-1 border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50"
           />
           <button
             type="submit"
             disabled={loading || !currentInput.trim()}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-sm font-medium shadow-2xs flex items-center justify-center min-w-[70px]"
+            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-sm font-medium shadow-sm flex items-center justify-center min-w-[70px]"
           >
             {loading ? "..." : "Send"}
           </button>

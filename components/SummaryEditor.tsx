@@ -142,7 +142,7 @@ export function SummaryEditor({
           value={goal}
           onChange={(e) => handleFieldChange("goal", e.target.value)}
           rows={2}
-          className="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+          className="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           placeholder="What are you trying to accomplish?"
         />
         {!goal.trim() && (
@@ -161,7 +161,7 @@ export function SummaryEditor({
           value={contextText}
           onChange={(e) => handleFieldChange("context", e.target.value)}
           rows={3}
-          className="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+          className="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           placeholder="Target users, situations, problem context..."
         />
       </div>
@@ -175,7 +175,7 @@ export function SummaryEditor({
           value={constraintsText}
           onChange={(e) => handleFieldChange("constraints", e.target.value)}
           rows={2}
-          className="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+          className="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           placeholder="Budget, timelines, tech stack, boundaries..."
         />
       </div>
@@ -194,7 +194,7 @@ export function SummaryEditor({
           value={unknownsText}
           onChange={(e) => handleFieldChange("unknowns", e.target.value)}
           rows={3}
-          className="w-full text-xs text-amber-950 bg-white/90 border border-amber-200 rounded-md p-2 focus:outline-hidden focus:ring-1 focus:ring-amber-500"
+          className="w-full text-xs text-amber-950 bg-white/90 border border-amber-200 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-amber-500"
           placeholder="List any known unknowns (e.g. [UNKNOWN] Audience size: not yet determined)"
         />
       </div>
@@ -213,7 +213,7 @@ export function SummaryEditor({
           value={assumptionsText}
           onChange={(e) => handleFieldChange("assumptions", e.target.value)}
           rows={2}
-          className="w-full text-xs text-purple-950 bg-white/90 border border-purple-200 rounded-md p-2 focus:outline-hidden focus:ring-1 focus:ring-purple-500"
+          className="w-full text-xs text-purple-950 bg-white/90 border border-purple-200 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-purple-500"
           placeholder="List working assumptions (e.g. [ASSUMPTION] Users have modern smartphones)"
         />
       </div>
@@ -225,7 +225,7 @@ export function SummaryEditor({
             type="button"
             onClick={handleSaveEdits}
             disabled={loading}
-            className="w-full py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-sm font-medium shadow-xs disabled:opacity-50 cursor-pointer"
+            className="w-full py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-sm font-medium shadow-sm disabled:opacity-50 cursor-pointer"
           >
             {loading ? "Updating..." : "Save Edits & Recalculate Score"}
           </button>
