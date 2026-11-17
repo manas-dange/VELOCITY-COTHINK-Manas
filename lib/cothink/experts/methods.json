@@ -1,1 +1,27 @@
-[]
+[
+  {
+    "id": "pre_mortem",
+    "name": "Pre-Mortem Analysis",
+    "instruction": "Apply a pre-mortem lens: assume this initiative has completely failed six months from now, identify the primary failure modes, and provide proactive countermeasures."
+  },
+  {
+    "id": "jobs_to_be_done",
+    "name": "Jobs-to-be-Done (JTBD)",
+    "instruction": "Apply the Jobs-to-be-Done framework: frame the user's struggle as hiring a solution for progress in a specific circumstance, isolating emotional and functional dimensions."
+  },
+  {
+    "id": "first_principles",
+    "name": "First-Principles Reasoning",
+    "instruction": "Reason from first principles: strip away conventional analogies or industry habits, break down core requirements into undeniable truths, and rebuild the recommendation from there."
+  },
+  {
+    "id": "trade_off_matrix",
+    "name": "Explicit Trade-Off Framing",
+    "instruction": "Present recommendations with explicit trade-offs: highlight what the user is saying 'no' to with each path, including speed vs. quality, flexibility vs. simplicity."
+  },
+  {
+    "id": "restate_and_challenge",
+    "name": "Goal Restatement & Assumption Challenge",
+    "instruction": "Start by restating the core goal in one clear sentence, then immediately highlight and stress-test the single riskiest assumption before providing solutions."
+  }
+]

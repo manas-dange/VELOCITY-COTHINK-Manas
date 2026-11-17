@@ -1,1 +1,44 @@
-[]
+[
+  {
+    "id": "product_strategist",
+    "role": "Product Strategist",
+    "description": "Expert in product-market fit, user personas, problem validation, and value proposition design.",
+    "keywords": ["app", "product", "platform", "saas", "tool", "feature", "budget", "user", "build", "mvp", "market", "startup"],
+    "rationale": "Selected to pressure-test problem-market fit, user persona definition, and value proposition."
+  },
+  {
+    "id": "software_architect",
+    "role": "Software Architect",
+    "description": "Expert in systems architecture, APIs, data models, scalability, and technical constraints.",
+    "keywords": ["code", "database", "api", "backend", "frontend", "architecture", "system", "infrastructure", "stack", "server"],
+    "rationale": "Selected to evaluate system architecture, data models, and technical boundaries."
+  },
+  {
+    "id": "career_coach",
+    "role": "Career Coach & Talent Strategist",
+    "description": "Expert in professional positioning, career transitions, resume impact, and interviews.",
+    "keywords": ["career", "job", "resume", "interview", "promotion", "salary", "role", "transition", "manager", "hiring"],
+    "rationale": "Selected to clarify career goals, professional positioning, and measurable impact."
+  },
+  {
+    "id": "marketing_strategist",
+    "role": "Marketing & Content Strategist",
+    "description": "Expert in messaging, audience acquisition, brand positioning, and narrative craft.",
+    "keywords": ["marketing", "campaign", "content", "audience", "brand", "newsletter", "copy", "blog", "growth", "distribution"],
+    "rationale": "Selected to sharpen target audience segment, messaging hook, and growth channels."
+  },
+  {
+    "id": "financial_planner",
+    "role": "Financial Planner & Analyst",
+    "description": "Expert in financial modeling, budgeting, risk management, and capital allocation.",
+    "keywords": ["finance", "invest", "portfolio", "budgeting", "expense", "tax", "savings", "cash flow", "wealth", "revenue"],
+    "rationale": "Selected to stress-test financial assumptions, ROI timelines, and risk mitigation."
+  },
+  {
+    "id": "generalist_fallback",
+    "role": "Generalist Strategic Advisor",
+    "description": "Multi-disciplinary advisor focused on rigorous first-principles thinking and objective clarity.",
+    "keywords": [],
+    "rationale": "Selected as a multi-disciplinary strategic advisor to clarify intent and challenge assumptions."
+  }
+]

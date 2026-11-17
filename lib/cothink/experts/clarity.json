@@ -1,1 +1,62 @@
-{}
+{
+  "threshold": 70,
+  "maxQuestions": 6,
+  "minWordCount": 5,
+  "hedgeWords": [
+    "maybe",
+    "not sure",
+    "i guess",
+    "probably",
+    "something like",
+    "perhaps",
+    "might be",
+    "possibly",
+    "i think",
+    "kind of",
+    "sort of"
+  ],
+  "dimensions": {
+    "goal": {
+      "weight": 20,
+      "label": "Goal",
+      "missingReason": "No goal statement provided yet.",
+      "partialReason": "Goal statement is brief or uncertain.",
+      "coveredReason": "Clear goal provided."
+    },
+    "audience": {
+      "weight": 20,
+      "label": "Audience / Context",
+      "missingReason": "No target audience or situational context identified.",
+      "partialReason": "Audience or context is vague or hedged.",
+      "coveredReason": "Specific target audience and context defined."
+    },
+    "problem": {
+      "weight": 20,
+      "label": "Problem",
+      "missingReason": "Core problem or pain point is not yet specified.",
+      "partialReason": "Problem is vaguely described or hedged.",
+      "coveredReason": "Concrete problem or need clearly articulated."
+    },
+    "evidence": {
+      "weight": 15,
+      "label": "Evidence",
+      "missingReason": "No supporting evidence, observations, or examples provided.",
+      "partialReason": "Evidence is anecdotal, brief, or hedged.",
+      "coveredReason": "Concrete evidence, observation, or data point provided."
+    },
+    "constraints": {
+      "weight": 15,
+      "label": "Constraints",
+      "missingReason": "No constraints (budget, timeline, tools, rules) stated.",
+      "partialReason": "Constraints mentioned tentatively or incompletely.",
+      "coveredReason": "Explicit constraints (time, budget, tech, scope) defined."
+    },
+    "risk": {
+      "weight": 10,
+      "label": "Risk / Assumptions",
+      "missingReason": "Key risks, trade-offs, or assumptions not yet addressed.",
+      "partialReason": "Risks or assumptions only briefly acknowledged.",
+      "coveredReason": "Key risks, failure modes, or assumptions challenged."
+    }
+  }
+}
