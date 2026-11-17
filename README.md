@@ -164,6 +164,45 @@ All interviewing behaviors and prompt construction logic are easily tuned withou
 
 ---
 
+## 💾 Additive Feature: Saved Briefs & Ghost-Text Autocomplete
+
+### What Is Stored & Where
+- Confirmed briefs are stored strictly in the client&apos;s browser **`localStorage`** under the key `cothink_saved_briefs_v1`.
+- **Stored Shape**: `id`, `goal`, `context`, `constraints`, `expertRole`, `finalPrompt`, `finalClarity`, `keywords`, `createdAt`, `isSyntheticSeed`.
+- **Zero In-Progress Data**: Keystrokes, drafts, and unconfirmed sessions are **never** stored.
+- **Storage Cap**: The list is automatically capped at **50 items** (FIFO: oldest briefs evicted first).
+
+### Consent Model (Default OFF)
+- Saved Briefs and Autocomplete are gated behind an explicit **Consent Switch** that defaults to **OFF**.
+- When OFF:
+  - Zero reads or writes occur to `localStorage`.
+  - No autocomplete suggestions or ghost text are rendered.
+- When the user confirms a brief, an explicit **"Save Brief to Browser"** button is displayed. **No auto-saving occurs.**
+
+### How to Delete Everything
+- Users can click **"Delete All"** inside the *Saved Briefs & Autocomplete* panel at any time.
+- All stored briefs and cached data are completely cleared from browser storage immediately.
+
+### Pluggable Backend Architecture (`BriefStore`)
+The storage layer is decoupled behind the pure `BriefStore` interface in `lib/cothink/store/types.ts`:
+```typescript
+export interface BriefStore {
+  isEnabled(): boolean;
+  setEnabled(enabled: boolean): boolean;
+  saveBrief(brief: Omit<SavedBrief, "id" | "createdAt">): Promise<SavedBrief>;
+  listBriefs(): Promise<SavedBrief[]>;
+  deleteBrief(id: string): Promise<boolean>;
+  deleteAll(): Promise<boolean>;
+}
+```
+To connect a production SQLite database or hosted PostgreSQL, simply implement `BriefStore` and supply the new adapter—the core module and autocomplete engine require zero modifications.
+
+### Honest Limitations
+- **Single Browser**: Storage is tied to the specific browser and profile; there is no cloud synchronization.
+- **No Keystroke Predictive Model**: Autocomplete is driven strictly by string prefix matching and token overlap against confirmed briefs in storage—it does not call an LLM on keystrokes.
+
+---
+
 ## ⚖️ Honest Trade-offs & Limitations
 
 1. **Coverage vs. Quality**: The Clarity Score measures coverage, specificity, and structural completeness of what was articulated. It does not assess the truthfulness or real-world market success of the idea.
