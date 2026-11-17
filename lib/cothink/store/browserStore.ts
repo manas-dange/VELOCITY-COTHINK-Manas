@@ -124,3 +124,4 @@ export class BrowserBriefStore implements BriefStore {
 }
 
 export const browserStore = new BrowserBriefStore();
+

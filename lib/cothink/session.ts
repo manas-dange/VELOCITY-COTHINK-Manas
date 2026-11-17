@@ -238,7 +238,7 @@ export async function submitAnswer(
   }
 
   // Recompute score
-  const clarity = computeClarityScore(brief, session.clarity.total);
+  let clarity = computeClarityScore(brief, session.clarity.total);
 
   // Check stop condition
   if (clarity.isReadyForSummary || turns.length >= 6) {
@@ -273,7 +273,31 @@ export async function submitAnswer(
     targetDimension: nextTargetDim,
   });
 
-  if (response.action === "summarize") {
+  // Apply any additional dimensions extracted by provider via briefPatch
+  if (response.briefPatch) {
+    let patched = false;
+    if (response.briefPatch.context && response.briefPatch.context.length > 0) {
+      for (const item of response.briefPatch.context) {
+        if (item.text && item.dimension && item.dimension !== targetDim) {
+          brief = addBriefItem(brief, "context", item.text, item.dimension, currentTurn.id);
+          patched = true;
+        }
+      }
+    }
+    if (response.briefPatch.constraints && response.briefPatch.constraints.length > 0) {
+      for (const item of response.briefPatch.constraints) {
+        if (item.text && item.dimension && item.dimension !== targetDim) {
+          brief = addBriefItem(brief, "constraints", item.text, item.dimension, currentTurn.id);
+          patched = true;
+        }
+      }
+    }
+    if (patched) {
+      clarity = computeClarityScore(brief, session.clarity.total);
+    }
+  }
+
+  if (response.action === "summarize" || clarity.isReadyForSummary) {
     brief = populateUnknownsFromGaps(brief, getGapsFromScore(clarity));
 
     const updatedSession: Session = {

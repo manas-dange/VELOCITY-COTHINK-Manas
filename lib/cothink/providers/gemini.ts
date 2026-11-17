@@ -43,25 +43,59 @@ export class GeminiProvider implements LLMProvider {
     params: ProviderGenerateParams,
     retriesLeft: number
   ): Promise<LLMResponsePayload> {
-    const { brief, turns, targetDimension } = params;
+    const { brief, currentScore, turns, targetDimension } = params;
 
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent?key=${this.apiKey}`;
+
+    // Construct checklist status string for the prompt
+    const checklistStatus = Object.entries(currentScore.dimensions).map(
+      ([dim, score]) => `- ${dim.toUpperCase()}: ${score.status.toUpperCase()} (${score.reason})`
+    ).join("\n");
+
+    const uncheckedDimensions = Object.entries(currentScore.dimensions)
+      .filter(([_, s]) => s.status !== "covered")
+      .map(([dim]) => dim);
 
     const promptPayload = {
       system_instruction: {
         parts: [
           {
             text: `You are an expert strategic advisor conducting an intent-clarifying dialogue.
-Rule: Ask ONE question per turn. Keep it brief.
-Grounding: Reference the user's last answer specifically.
-Target: Probe the dimension "${targetDimension}".
-Challenge assumptions or reasoning gaps. Do not invent facts.
-Output strictly JSON matching:
+Your mission is to help clarify the user's brief across six specific dimensions:
+1. GOAL (objective)
+2. AUDIENCE (target user / persona / context)
+3. PROBLEM (acute pain point / friction)
+4. EVIDENCE (observations, proof, user data)
+5. CONSTRAINTS (budget, time, tech stack, rules)
+6. RISK (key assumptions challenged, failure modes)
+
+RULES:
+1. CHECKLIST EVALUATION:
+   Analyze the user's latest response. If the user provided information addressing any of the dimensions, extract those user-stated facts into briefPatch.context or briefPatch.constraints tagged with the appropriate dimension. Do not invent facts.
+
+2. TARGETED PROBING:
+   Review the current checklist. Look at what is NOT checked (Missing or Partial).
+   Your next question MUST explicitly ask ONLY for the highest-priority unchecked dimension (${targetDimension}).
+   Reference specific details the user previously gave, but keep the question focused directly on filling the missing checkbox.
+   Ask exactly ONE concise question.
+
+3. STOP RULE:
+   If all key dimensions are covered or threshold is reached, set "action": "summarize".
+
+Output strictly valid JSON matching this schema:
 {
-  "action": "ask",
-  "question": "your question",
+  "action": "ask" | "summarize",
+  "question": "your focused question asking explicitly for the missing dimension",
   "rationale": "Probing: ${targetDimension} - reason",
-  "targetDimension": "${targetDimension}"
+  "targetDimension": "${targetDimension}",
+  "briefPatch": {
+    "context": [
+      { "text": "fact extracted from user words", "dimension": "audience | problem | evidence" }
+    ],
+    "constraints": [
+      { "text": "constraint extracted from user words", "dimension": "constraints | risk" }
+    ]
+  }
 }`,
           },
         ],
@@ -72,15 +106,19 @@ Output strictly JSON matching:
           parts: [
             {
               text: JSON.stringify({
-                goal: brief.goal,
-                context: brief.context.map((c) => ({ text: c.text, dim: c.dimension })),
-                constraints: brief.constraints.map((c) => ({ text: c.text, dim: c.dimension })),
+                currentChecklistStatus: checklistStatus,
+                uncheckedDimensionsToTarget: uncheckedDimensions,
+                primaryGapToProbeNow: targetDimension,
+                brief: {
+                  goal: brief.goal,
+                  context: brief.context.map((c) => ({ text: c.text, dim: c.dimension })),
+                  constraints: brief.constraints.map((c) => ({ text: c.text, dim: c.dimension })),
+                },
                 conversationTurns: turns.map((t) => ({
                   q: t.question,
                   a: t.answer,
                   probing: t.targetDimension,
                 })),
-                targetDimensionToProbe: targetDimension,
               }),
             },
           ],
@@ -88,7 +126,7 @@ Output strictly JSON matching:
       ],
       generationConfig: {
         responseMimeType: "application/json",
-        temperature: 0.4,
+        temperature: 0.3,
       },
     };
 

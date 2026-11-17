@@ -22,3 +22,4 @@ export interface BriefStore {
   deleteBrief(id: string): Promise<boolean>;
   deleteAll(): Promise<boolean>;
 }
+
