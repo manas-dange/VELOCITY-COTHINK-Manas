@@ -62,18 +62,36 @@ export function useCoThink() {
     return await callApi("summary", { session, edits });
   };
 
-  const confirm = async () => {
-    if (!session) return;
-    return await callApi("confirm", { session });
+  const confirm = async (sessionOverride?: Session) => {
+    const s = sessionOverride || session;
+    if (!s) return;
+    return await callApi("confirm", { session: s });
   };
 
-  const generateFinal = async () => {
-    if (!session) return;
-    const data = await callApi("final", { session });
+  const generateFinal = async (sessionOverride?: Session) => {
+    const s = sessionOverride || session;
+    if (!s) return;
+    const data = await callApi("final", { session: s });
     if (data.result?.prompt) {
       setFinalResult(data.result);
     }
     return data;
+  };
+
+  const confirmAndGenerateFinal = async (edits?: BriefEdits) => {
+    if (!session) return;
+    let activeSession = session;
+    if (edits) {
+      const summaryData = await callApi("summary", { session: activeSession, edits });
+      if (summaryData?.session) {
+        activeSession = summaryData.session;
+      }
+    }
+
+    const confirmData = await callApi("confirm", { session: activeSession });
+    if (confirmData?.session) {
+      return await generateFinal(confirmData.session);
+    }
   };
 
   const reset = () => {
@@ -94,6 +112,7 @@ export function useCoThink() {
     editSummary,
     confirm,
     generateFinal,
+    confirmAndGenerateFinal,
     reset,
   };
 }

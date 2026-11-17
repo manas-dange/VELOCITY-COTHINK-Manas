@@ -7,7 +7,7 @@ interface SummaryEditorProps {
   clarity: ClarityScore;
   loading: boolean;
   onUpdate: (edits: BriefEdits) => Promise<any>;
-  onConfirm: () => Promise<any>;
+  onConfirm: (edits?: BriefEdits) => Promise<any>;
 }
 
 export function SummaryEditor({
@@ -42,7 +42,7 @@ export function SummaryEditor({
     if (field === "assumptions") setAssumptionsText(val);
   };
 
-  const handleSaveEdits = async () => {
+  const getEditsPayload = (): BriefEdits => {
     const newContext = contextText
       .split("\n")
       .map((t) => t.trim())
@@ -89,13 +89,18 @@ export function SummaryEditor({
         text,
       }));
 
-    await onUpdate({
+    return {
       goal: goal.trim(),
       context: newContext,
       constraints: newConstraints,
       unknowns: newUnknowns,
       assumptions: newAssumptions,
-    });
+    };
+  };
+
+  const handleSaveEdits = async () => {
+    const edits = getEditsPayload();
+    await onUpdate(edits);
     setHasUnsavedEdits(false);
   };
 
@@ -229,10 +234,8 @@ export function SummaryEditor({
         <button
           type="button"
           onClick={async () => {
-            if (hasUnsavedEdits) {
-              await handleSaveEdits();
-            }
-            await onConfirm();
+            const edits = hasUnsavedEdits ? getEditsPayload() : undefined;
+            await onConfirm(edits);
           }}
           disabled={!canConfirm || loading}
           className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"

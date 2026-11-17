@@ -19,8 +19,7 @@ export default function Home() {
     correct,
     generateNow,
     editSummary,
-    confirm,
-    generateFinal,
+    confirmAndGenerateFinal,
     reset,
   } = useCoThink();
 
@@ -33,9 +32,8 @@ export default function Home() {
     await start(intent.trim());
   };
 
-  const handleConfirmAndGenerate = async () => {
-    await confirm();
-    await generateFinal();
+  const handleConfirmAndGenerate = async (edits?: any) => {
+    await confirmAndGenerateFinal(edits);
   };
 
   const currentStage = session?.stage || "intake";
