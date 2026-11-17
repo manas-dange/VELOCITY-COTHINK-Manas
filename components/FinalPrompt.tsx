@@ -5,10 +5,34 @@ interface FinalPromptProps {
   prompt: string;
   meta: FinalPromptMeta;
   onReset: () => void;
+  onSaveBrief?: () => Promise<void>;
+  isStorageEnabled?: boolean;
 }
 
-export function FinalPrompt({ prompt, meta, onReset }: FinalPromptProps) {
+export function FinalPrompt({
+  prompt,
+  meta,
+  onReset,
+  onSaveBrief,
+  isStorageEnabled = false,
+}: FinalPromptProps) {
   const [copied, setCopied] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    if (!onSaveBrief || saving) return;
+    setSaving(true);
+    try {
+      await onSaveBrief();
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      console.error("Save error:", err);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const handleCopy = async () => {
     try {
@@ -93,7 +117,22 @@ export function FinalPrompt({ prompt, meta, onReset }: FinalPromptProps) {
       </div>
 
       {/* Footer Actions */}
-      <div className="pt-2">
+      <div className="pt-2 space-y-2">
+        {onSaveBrief && (
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={saving || saved}
+            className={`w-full py-2.5 rounded-xl text-xs font-semibold cursor-pointer transition-colors border flex items-center justify-center gap-1.5 ${
+              saved
+                ? "bg-emerald-100 text-emerald-800 border-emerald-300"
+                : "bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200"
+            }`}
+          >
+            <span>{saved ? "✓ Saved to Browser Storage!" : saving ? "Saving..." : "💾 Save Brief to Browser"}</span>
+          </button>
+        )}
+
         <button
           type="button"
           onClick={onReset}

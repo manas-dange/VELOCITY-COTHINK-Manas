@@ -1,0 +1,5 @@
+{
+  "minChars": 3,
+  "minKeywordOverlap": 2,
+  "debounceMs": 150
+}

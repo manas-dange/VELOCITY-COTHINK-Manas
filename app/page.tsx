@@ -1,12 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Chat } from "@/components/Chat";
 import { ClarityMeter } from "@/components/ClarityMeter";
 import { FinalPrompt } from "@/components/FinalPrompt";
 import { ProviderBadge } from "@/components/ProviderBadge";
+import { SavedBriefsPanel } from "@/components/SavedBriefsPanel";
 import { SummaryEditor } from "@/components/SummaryEditor";
 import { useCoThink } from "@/hooks/useCoThink";
+import { useSavedBriefs } from "@/hooks/useSavedBriefs";
+import { getGhostSuggestion, SuggestionResult } from "@/lib/cothink";
 
 export default function Home() {
   const {
@@ -23,7 +26,41 @@ export default function Home() {
     reset,
   } = useCoThink();
 
+  const {
+    consent,
+    briefs: savedBriefs,
+    toggleConsent,
+    saveBrief,
+    deleteBrief,
+    deleteAll,
+    loadDemoData,
+  } = useSavedBriefs();
+
   const [initialInput, setInitialInput] = useState("");
+  const [suggestion, setSuggestion] = useState<SuggestionResult | null>(null);
+
+  // Debounced ghost-text suggestion matching
+  useEffect(() => {
+    if (!consent || !initialInput || initialInput.trim().length < 3) {
+      setSuggestion(null);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      const match = getGhostSuggestion(initialInput, savedBriefs);
+      setSuggestion(match);
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [initialInput, savedBriefs, consent]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Tab" && suggestion) {
+      e.preventDefault();
+      setInitialInput(suggestion.fullSuggestion);
+      setSuggestion(null);
+    }
+  };
 
   const handleStart = async (e?: React.FormEvent, preset?: string) => {
     if (e) e.preventDefault();
@@ -34,6 +71,19 @@ export default function Home() {
 
   const handleConfirmAndGenerate = async (edits?: any) => {
     await confirmAndGenerateFinal(edits);
+  };
+
+  const handleSaveCurrentBrief = async () => {
+    if (!session || !finalResult) return;
+    await saveBrief({
+      goal: session.brief.goal,
+      context: session.brief.context.map((c) => c.text),
+      constraints: session.brief.constraints.map((c) => c.text),
+      expertRole: finalResult.meta.expertRole,
+      finalPrompt: finalResult.prompt,
+      finalClarity: finalResult.meta.finalClarity,
+      keywords: [session.brief.expert?.role || "", ...session.brief.goal.toLowerCase().split(/\s+/)],
+    });
   };
 
   const currentStage = session?.stage || "intake";
@@ -70,9 +120,9 @@ export default function Home() {
         <div className="p-3.5 flex-1 flex flex-col overflow-y-auto">
           {/* Stage 1: Intake / Empty State */}
           {(!session || currentStage === "intake") && (
-            <div className="my-auto space-y-5 py-6">
+            <div className="my-auto space-y-4 py-4">
               <div className="space-y-1.5 text-center">
-                <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center mx-auto text-xl text-indigo-600 mb-2">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center mx-auto text-xl text-indigo-600 mb-1">
                   💡
                 </div>
                 <h2 className="text-lg font-bold text-slate-900">
@@ -83,16 +133,41 @@ export default function Home() {
                 </p>
               </div>
 
+              {/* Input Form with Ghost Text Autocomplete */}
               <form onSubmit={(e) => handleStart(e)} className="space-y-2">
-                <textarea
-                  value={initialInput}
-                  onChange={(e) => setInitialInput(e.target.value)}
-                  disabled={loading}
-                  rows={3}
-                  placeholder="e.g. I want to build a budgeting app..."
-                  className="w-full border border-slate-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none shadow-sm"
-                  autoFocus
-                />
+                <div className="space-y-1">
+                  <textarea
+                    value={initialInput}
+                    onChange={(e) => setInitialInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    disabled={loading}
+                    rows={3}
+                    placeholder="e.g. I want to build a budgeting app..."
+                    className="w-full border border-slate-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none shadow-sm"
+                    autoFocus
+                  />
+
+                  {/* Ghost-Text Suggestion Pill */}
+                  {suggestion && (
+                    <div className="text-xs text-indigo-800 bg-indigo-50 border border-indigo-200 rounded-lg p-2 flex items-center justify-between animate-fade-in shadow-2xs">
+                      <div className="flex items-center gap-1.5 truncate mr-2">
+                        <span className="font-semibold text-indigo-700 shrink-0">💡 From saved briefs:</span>
+                        <span className="text-slate-600 truncate">{suggestion.fullSuggestion}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setInitialInput(suggestion.fullSuggestion);
+                          setSuggestion(null);
+                        }}
+                        className="px-2 py-0.5 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-md text-[11px] font-bold shrink-0 shadow-2xs cursor-pointer"
+                      >
+                        Accept [Tab]
+                      </button>
+                    </div>
+                  )}
+                </div>
+
                 <button
                   type="submit"
                   disabled={loading || !initialInput.trim()}
@@ -103,11 +178,11 @@ export default function Home() {
               </form>
 
               {/* Starter Presets */}
-              <div className="pt-2">
-                <span className="text-[11px] font-semibold text-slate-400 block mb-2 uppercase tracking-wider text-center">
+              <div className="pt-1">
+                <span className="text-[10px] font-semibold text-slate-400 block mb-1.5 uppercase tracking-wider text-center">
                   Or test with a sample prompt:
                 </span>
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                   {[
                     "I want to build a budgeting app.",
                     "I want to write a technical blog post on distributed consensus.",
@@ -121,12 +196,25 @@ export default function Home() {
                         handleStart(undefined, preset);
                       }}
                       disabled={loading}
-                      className="w-full text-left p-2 rounded-lg border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50 text-xs text-slate-700 transition-colors cursor-pointer"
+                      className="w-full text-left px-2.5 py-1.5 rounded-lg border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50 text-xs text-slate-700 transition-colors cursor-pointer"
                     >
-                      "{preset}"
+                      &quot;{preset}&quot;
                     </button>
                   ))}
                 </div>
+              </div>
+
+              {/* Saved Briefs & Autocomplete Panel */}
+              <div className="pt-2">
+                <SavedBriefsPanel
+                  consent={consent}
+                  briefs={savedBriefs}
+                  onToggleConsent={toggleConsent}
+                  onDeleteBrief={deleteBrief}
+                  onDeleteAll={deleteAll}
+                  onLoadDemoData={loadDemoData}
+                  onSelectBrief={(goal) => setInitialInput(goal)}
+                />
               </div>
             </div>
           )}
@@ -163,6 +251,8 @@ export default function Home() {
               prompt={finalResult.prompt}
               meta={finalResult.meta}
               onReset={reset}
+              onSaveBrief={handleSaveCurrentBrief}
+              isStorageEnabled={consent}
             />
           )}
         </div>
