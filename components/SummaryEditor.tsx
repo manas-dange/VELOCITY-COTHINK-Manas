@@ -99,148 +99,137 @@ export function SummaryEditor({
   };
 
   const handleSaveEdits = async () => {
-    const edits = getEditsPayload();
-    await onUpdate(edits);
+    if (loading) return;
+    const payload = getEditsPayload();
+    await onUpdate(payload);
     setHasUnsavedEdits(false);
   };
 
-  const canConfirm = goal.trim().length > 0;
+  const handleConfirm = async () => {
+    if (loading) return;
+    const payload = hasUnsavedEdits ? getEditsPayload() : undefined;
+    await onConfirm(payload);
+  };
+
+  const isGoalValid = goal.trim().length > 0;
 
   return (
-    <div className="space-y-4 pb-6">
-      {/* Pinned Score in Summary */}
-      <ClarityMeter clarity={clarity} />
+    <div className="space-y-4 pb-6 overflow-y-auto">
+      <ClarityMeter clarity={clarity} pinned />
 
-      {/* Header */}
-      <div className="border-b pb-2 flex items-center justify-between">
-        <div>
-          <h2 className="text-base font-bold text-slate-900">
-            Structured Brief Review
-          </h2>
-          <p className="text-xs text-slate-500">
-            Review and refine your brief. Labelled unknowns & assumptions are marked.
-          </p>
-        </div>
-        {brief.expert && (
-          <div className="text-right">
-            <span className="text-[10px] uppercase font-semibold text-slate-400 block">
-              Perspective
-            </span>
-            <span className="text-xs font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-sm">
-              {brief.expert.role}
-            </span>
-          </div>
-        )}
+      {/* Banner */}
+      <div className="bg-[#1e1538]/80 border border-purple-500/20 rounded-2xl p-3.5 space-y-1">
+        <h2 className="text-sm font-bold text-white flex items-center gap-1.5">
+          <span>📋</span> Review & Confirm Intent Brief
+        </h2>
+        <p className="text-xs text-purple-300/80 leading-relaxed">
+          Verify and edit the structured brief. When ready, confirm to generate your production-grade prompt.
+        </p>
       </div>
 
-      {/* Goal Section */}
-      <div className="space-y-1.5">
-        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-          Primary Goal <span className="text-rose-500">*</span>
-        </label>
-        <textarea
-          value={goal}
-          onChange={(e) => handleFieldChange("goal", e.target.value)}
-          rows={2}
-          className="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          placeholder="What are you trying to accomplish?"
-        />
-        {!goal.trim() && (
-          <p className="text-[11px] text-rose-500 font-medium">
-            Goal is required to confirm the brief.
-          </p>
-        )}
-      </div>
-
-      {/* Context Section */}
-      <div className="space-y-1.5">
-        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-          Verified Context & Audience (one per line)
-        </label>
-        <textarea
-          value={contextText}
-          onChange={(e) => handleFieldChange("context", e.target.value)}
-          rows={3}
-          className="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          placeholder="Target users, situations, problem context..."
-        />
-      </div>
-
-      {/* Constraints Section */}
-      <div className="space-y-1.5">
-        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-          Stated Constraints (one per line)
-        </label>
-        <textarea
-          value={constraintsText}
-          onChange={(e) => handleFieldChange("constraints", e.target.value)}
-          rows={2}
-          className="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          placeholder="Budget, timelines, tech stack, boundaries..."
-        />
-      </div>
-
-      {/* Labelled Unknowns Section */}
-      <div className="space-y-1.5 bg-amber-50/60 border border-amber-200/80 rounded-lg p-3">
-        <div className="flex items-center justify-between">
-          <label className="block text-xs font-bold text-amber-900 uppercase tracking-wider">
-            [UNKNOWN] Unanswered Areas / Gaps
+      {/* Editable Fields */}
+      <div className="space-y-3 text-xs">
+        {/* Goal Field */}
+        <div className="space-y-1">
+          <label className="font-bold text-slate-200 flex items-center justify-between">
+            <span>Primary Goal *</span>
+            {!isGoalValid && (
+              <span className="text-rose-400 font-normal">Goal cannot be empty</span>
+            )}
           </label>
-          <span className="text-[10px] text-amber-700 font-medium">
-            Identified by Clarity Scorer
-          </span>
+          <input
+            type="text"
+            value={goal}
+            onChange={(e) => handleFieldChange("goal", e.target.value)}
+            disabled={loading}
+            className={`w-full bg-[#130d26] border rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none transition-colors ${
+              isGoalValid ? "border-purple-500/30 focus:border-purple-400" : "border-rose-500/50"
+            }`}
+            placeholder="Primary goal is required..."
+          />
         </div>
-        <textarea
-          value={unknownsText}
-          onChange={(e) => handleFieldChange("unknowns", e.target.value)}
-          rows={3}
-          className="w-full text-xs text-amber-950 bg-white/90 border border-amber-200 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-amber-500"
-          placeholder="List any known unknowns (e.g. [UNKNOWN] Audience size: not yet determined)"
-        />
-      </div>
 
-      {/* Labelled Assumptions Section */}
-      <div className="space-y-1.5 bg-purple-50/60 border border-purple-200/80 rounded-lg p-3">
-        <div className="flex items-center justify-between">
-          <label className="block text-xs font-bold text-purple-900 uppercase tracking-wider">
-            [ASSUMPTION] Inferred / Working Assumptions
+        {/* Context / Facts */}
+        <div className="space-y-1">
+          <label className="font-bold text-slate-200">
+            Context & Background Facts (one per line)
           </label>
-          <span className="text-[10px] text-purple-700 font-medium">
-            Never treated as verified facts
-          </span>
+          <textarea
+            value={contextText}
+            onChange={(e) => handleFieldChange("context", e.target.value)}
+            disabled={loading}
+            rows={3}
+            className="w-full bg-[#130d26] border border-purple-500/30 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-purple-400 resize-none"
+            placeholder="Add relevant facts..."
+          />
         </div>
-        <textarea
-          value={assumptionsText}
-          onChange={(e) => handleFieldChange("assumptions", e.target.value)}
-          rows={2}
-          className="w-full text-xs text-purple-950 bg-white/90 border border-purple-200 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-purple-500"
-          placeholder="List working assumptions (e.g. [ASSUMPTION] Users have modern smartphones)"
-        />
+
+        {/* Constraints */}
+        <div className="space-y-1">
+          <label className="font-bold text-slate-200">
+            Constraints & Guardrails (one per line)
+          </label>
+          <textarea
+            value={constraintsText}
+            onChange={(e) => handleFieldChange("constraints", e.target.value)}
+            disabled={loading}
+            rows={2}
+            className="w-full bg-[#130d26] border border-purple-500/30 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-purple-400 resize-none"
+            placeholder="e.g. Budget under $500, no third-party APIs..."
+          />
+        </div>
+
+        {/* Labelled Unknowns */}
+        <div className="space-y-1">
+          <label className="font-bold text-amber-300 flex items-center gap-1">
+            <span>⚠️</span> Labelled Unknowns (generated or flagged)
+          </label>
+          <textarea
+            value={unknownsText}
+            onChange={(e) => handleFieldChange("unknowns", e.target.value)}
+            disabled={loading}
+            rows={2}
+            className="w-full bg-[#191124] border border-amber-500/30 rounded-xl p-2.5 text-xs text-amber-200 focus:outline-none focus:border-amber-400 resize-none"
+            placeholder="Unconfirmed items will be highlighted as unknowns..."
+          />
+        </div>
+
+        {/* Assumptions */}
+        <div className="space-y-1">
+          <label className="font-bold text-slate-200">
+            Assumptions (working hypotheses)
+          </label>
+          <textarea
+            value={assumptionsText}
+            onChange={(e) => handleFieldChange("assumptions", e.target.value)}
+            disabled={loading}
+            rows={2}
+            className="w-full bg-[#130d26] border border-purple-500/30 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-purple-400 resize-none"
+            placeholder="Assumptions to validate..."
+          />
+        </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-col gap-2 pt-2">
+      <div className="pt-2 space-y-2">
         {hasUnsavedEdits && (
           <button
             type="button"
             onClick={handleSaveEdits}
             disabled={loading}
-            className="w-full py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-sm font-medium shadow-sm disabled:opacity-50 cursor-pointer"
+            className="w-full py-2 bg-[#22173f] hover:bg-[#2e1f54] text-purple-200 border border-purple-500/30 rounded-xl text-xs font-semibold shadow-sm transition-all"
           >
-            {loading ? "Updating..." : "Save Edits & Recalculate Score"}
+            {loading ? "Saving..." : "Save Edits & Recalculate Score"}
           </button>
         )}
 
         <button
           type="button"
-          onClick={async () => {
-            const edits = hasUnsavedEdits ? getEditsPayload() : undefined;
-            await onConfirm(edits);
-          }}
-          disabled={!canConfirm || loading}
-          className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+          onClick={handleConfirm}
+          disabled={loading || !isGoalValid}
+          className="w-full py-3 bg-gradient-to-r from-[#7c3aed] to-[#a855f7] hover:from-[#6d28d9] hover:to-[#9333ea] disabled:opacity-40 text-white rounded-xl text-sm font-bold shadow-lg shadow-purple-900/40 transition-all flex items-center justify-center gap-2 cursor-pointer"
         >
-          <span>✓ Confirm Brief & Generate Final Prompt</span>
+          <span>{loading ? "Generating Final Prompt..." : "Confirm Brief & Generate Final Prompt →"}</span>
         </button>
       </div>
     </div>

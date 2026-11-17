@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Turn } from "@/lib/cothink/types";
+import { MascotAvatar } from "./Mascot";
 
 interface ChatProps {
   turns: Turn[];
@@ -41,157 +42,177 @@ export function Chat({
     setEditingTurnId(null);
   };
 
+  // Find latest pending turn with suggestions
+  const latestPendingTurn = turns.length > 0 && !turns[turns.length - 1].answer ? turns[turns.length - 1] : null;
+
   return (
-    <div className="flex flex-col flex-1 pb-4">
+    <div className="flex flex-col flex-1 h-full min-h-0">
       {/* Messages Scroll Area */}
-      <div className="flex-1 space-y-4 mb-4">
+      <div className="flex-1 overflow-y-auto space-y-4 px-1 pb-4">
         {turns.map((turn, index) => (
           <div key={turn.id} className="space-y-3">
-            {/* Assistant Question */}
-            <div className="flex flex-col items-start max-w-[92%]">
-              <div className="flex items-center gap-1.5 mb-1 px-1">
-                <span className="text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-sm">
-                  {index === 0 ? "Initial Prompt" : expertRole}
-                </span>
-                {turn.targetDimension && index > 0 && (
-                  <span className="text-[10px] font-medium text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded-sm">
-                    Probing: {turn.targetDimension.toUpperCase()}
+            {/* Assistant Question Bubble */}
+            <div className="flex items-start gap-2 max-w-[90%]">
+              <MascotAvatar className="w-8 h-8 mt-1" />
+              <div className="flex flex-col items-start">
+                <div className="flex items-center gap-1.5 mb-1 px-1">
+                  <span className="text-[10px] font-bold text-purple-300 uppercase tracking-wider">
+                    {index === 0 ? "Initial Prompt" : expertRole}
                   </span>
-                )}
-              </div>
-              <div className="bg-slate-100 border border-slate-200/80 text-slate-800 text-sm rounded-2xl rounded-tl-sm px-3.5 py-2.5 shadow-sm leading-relaxed">
-                {turn.question}
-              </div>
-              {turn.rationale && (
-                <div className="text-[11px] text-slate-400 mt-1 px-1 italic">
-                  {turn.rationale}
-                </div>
-              )}
-
-              {/* Quick-reply Answer Chips (Choice A: 1-Tap Direct Submission) */}
-              {!turn.answer && turn.suggestedOptions && turn.suggestedOptions.length > 0 && !loading && (
-                <div className="space-y-1.5 pt-2 w-full">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block px-1">
-                    ⚡ Quick Options (tap to submit):
-                  </span>
-                  <div className="flex flex-col gap-1.5">
-                    {turn.suggestedOptions.map((opt, i) => (
-                      <button
-                        key={i}
-                        type="button"
-                        onClick={() => onAnswer(opt)}
-                        disabled={loading}
-                        className="text-left text-xs text-indigo-900 bg-indigo-50/70 hover:bg-indigo-100 border border-indigo-200/70 hover:border-indigo-300 rounded-xl px-3 py-2 transition-colors font-medium cursor-pointer flex items-center justify-between group shadow-xs"
-                      >
-                        <span className="leading-snug">{opt}</span>
-                        <span className="text-indigo-400 group-hover:text-indigo-600 text-[10px] font-bold shrink-0 ml-2">
-                          Send →
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* User Answer (if answered) */}
-            {turn.answer !== undefined && (
-              <div className="flex flex-col items-end ml-auto max-w-[92%]">
-                <div className="flex items-center gap-2 mb-1 px-1">
-                  <span className="text-[11px] font-semibold text-slate-400">
-                    You
-                  </span>
-                  {editingTurnId !== turn.id && !loading && (
-                    <button
-                      type="button"
-                      onClick={() => handleStartEdit(turn)}
-                      className="text-[11px] text-indigo-600 hover:text-indigo-800 hover:underline cursor-pointer"
-                    >
-                      Edit
-                    </button>
+                  {turn.targetDimension && index > 0 && (
+                    <span className="text-[9px] font-semibold text-purple-200/70 bg-purple-900/40 border border-purple-500/20 px-1.5 py-0.5 rounded-full">
+                      {turn.targetDimension}
+                    </span>
                   )}
                 </div>
 
-                {editingTurnId === turn.id ? (
-                  <div className="w-full bg-white border-2 border-indigo-500 rounded-xl p-2.5 shadow-sm space-y-2">
-                    <textarea
-                      value={editText}
-                      onChange={(e) => setEditText(e.target.value)}
-                      rows={3}
-                      className="w-full text-sm text-slate-800 focus:outline-hidden resize-none"
-                      placeholder="Correct your response..."
-                      autoFocus
-                    />
-                    <div className="flex justify-end gap-1.5 pt-1 border-t border-slate-100">
-                      <button
-                        type="button"
-                        onClick={() => setEditingTurnId(null)}
-                        disabled={loading}
-                        className="px-2.5 py-1 text-xs text-slate-500 hover:text-slate-700"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleSaveEdit(turn.id)}
-                        disabled={loading || !editText.trim()}
-                        className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-xs font-medium shadow-sm disabled:opacity-50"
-                      >
-                        {loading ? "Updating..." : "Save Correction"}
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="bg-indigo-600 text-white text-sm rounded-2xl rounded-tr-sm px-3.5 py-2.5 shadow-sm leading-relaxed">
-                    {turn.answer}
+                <div className="bg-[#241a3e] border border-white/5 text-slate-100 text-sm rounded-2xl rounded-tl-sm px-4 py-3 shadow-md leading-relaxed">
+                  {turn.question}
+                </div>
+
+                {turn.rationale && (
+                  <div className="text-[11px] text-purple-300/60 mt-1 px-1 italic">
+                    {turn.rationale}
                   </div>
                 )}
+              </div>
+            </div>
+
+            {/* User Answer Bubble (if answered) */}
+            {turn.answer !== undefined && (
+              <div className="flex items-start justify-end gap-2 ml-auto max-w-[90%]">
+                <div className="flex flex-col items-end w-full">
+                  <div className="flex items-center gap-2 mb-1 px-1">
+                    <span className="text-[10px] font-bold text-slate-400">
+                      You
+                    </span>
+                    {editingTurnId !== turn.id && !loading && (
+                      <button
+                        type="button"
+                        onClick={() => handleStartEdit(turn)}
+                        className="text-[10px] text-purple-300 hover:text-purple-100 hover:underline cursor-pointer"
+                      >
+                        Edit
+                      </button>
+                    )}
+                  </div>
+
+                  {editingTurnId === turn.id ? (
+                    <div className="w-full bg-[#1e1533] border border-purple-500/40 rounded-2xl p-3 shadow-lg space-y-2">
+                      <textarea
+                        value={editText}
+                        onChange={(e) => setEditText(e.target.value)}
+                        rows={3}
+                        className="w-full text-sm text-slate-100 bg-transparent focus:outline-none resize-none placeholder-slate-500"
+                        placeholder="Correct your response..."
+                        autoFocus
+                      />
+                      <div className="flex justify-end gap-2 pt-2 border-t border-purple-500/20">
+                        <button
+                          type="button"
+                          onClick={() => setEditingTurnId(null)}
+                          disabled={loading}
+                          className="px-2.5 py-1 text-xs text-slate-400 hover:text-slate-200"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleSaveEdit(turn.id)}
+                          disabled={loading || !editText.trim()}
+                          className="px-3 py-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-lg text-xs font-semibold shadow-md disabled:opacity-50"
+                        >
+                          {loading ? "Updating..." : "Save Correction"}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-[#362555] border border-purple-400/20 text-white text-sm rounded-2xl rounded-tr-sm px-4 py-2.5 shadow-md leading-relaxed">
+                      {turn.answer}
+                    </div>
+                  )}
+                </div>
+
+                {/* User Avatar */}
+                <div className="w-7 h-7 rounded-full bg-slate-700/80 border border-white/20 flex items-center justify-center text-[10px] font-bold text-slate-200 shrink-0 mt-1 select-none">
+                  U
+                </div>
               </div>
             )}
           </div>
         ))}
 
         {loading && (
-          <div className="flex items-center gap-2 text-xs text-slate-500 italic py-2">
-            <span className="w-2 h-2 rounded-full bg-indigo-600 animate-ping" />
+          <div className="flex items-center gap-2 text-xs text-purple-300/80 italic py-2 pl-2">
+            <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping" />
             <span>Analyzing intent and calibrating next question...</span>
           </div>
         )}
       </div>
 
-      {/* Answer Input & Actions */}
-      <div className="sticky bottom-0 bg-white/95 backdrop-blur-sm pt-2 border-t border-slate-100 space-y-2">
-        <form onSubmit={handleSubmit} className="flex gap-2">
+      {/* Floating Bottom Section: Quick Chips + Input Pill Bar */}
+      <div className="pt-2 space-y-2">
+        {/* Suggestion Chips (Horizontal Scrolling like in Screenshot) */}
+        {latestPendingTurn && latestPendingTurn.suggestedOptions && latestPendingTurn.suggestedOptions.length > 0 && !loading && (
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 px-1">
+            {latestPendingTurn.suggestedOptions.map((opt, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => onAnswer(opt)}
+                disabled={loading}
+                className="bg-[#21163b]/90 hover:bg-[#2d1e4e] active:scale-95 text-[#c7b9e8] text-xs font-medium px-3.5 py-1.5 rounded-full border border-purple-500/20 whitespace-nowrap transition-all shadow-sm flex items-center gap-1 shrink-0"
+              >
+                <span>{opt}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Floating Input Pill matching Screenshot */}
+        <form
+          onSubmit={handleSubmit}
+          className="bg-[#1b1333] border border-white/10 rounded-full p-1 pl-3 flex items-center gap-2 shadow-2xl backdrop-blur-md"
+        >
+          <button
+            type="button"
+            onClick={onGenerateNow}
+            disabled={loading}
+            title="Generate now with labelled unknowns"
+            className="w-7 h-7 rounded-full bg-white/5 hover:bg-white/15 text-purple-300 flex items-center justify-center text-xs transition-colors shrink-0"
+          >
+            ⚡
+          </button>
+
           <input
             type="text"
             value={currentInput}
             onChange={(e) => setCurrentInput(e.target.value)}
             disabled={loading}
-            placeholder="Type your response..."
-            className="flex-1 border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50"
+            placeholder="Type your message"
+            className="flex-1 bg-transparent text-white placeholder-[#786b96] text-sm focus:outline-none py-1.5 min-w-0"
           />
+
           <button
             type="submit"
             disabled={loading || !currentInput.trim()}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-sm font-medium shadow-sm flex items-center justify-center min-w-[70px]"
+            className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#7c3aed] to-[#a855f7] hover:from-[#6d28d9] hover:to-[#9333ea] disabled:opacity-40 text-white flex items-center justify-center shadow-lg shadow-purple-900/40 active:scale-95 transition-all shrink-0 cursor-pointer"
           >
-            {loading ? "..." : "Send"}
+            <svg
+              className="w-4 h-4 transform rotate-45 -translate-x-0.5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+              />
+            </svg>
           </button>
         </form>
-
-        <div className="flex justify-between items-center text-xs px-1">
-          <span className="text-slate-400">
-            One adaptive question at a time
-          </span>
-          <button
-            type="button"
-            onClick={onGenerateNow}
-            disabled={loading}
-            className="text-indigo-600 hover:text-indigo-800 font-medium hover:underline flex items-center gap-1 disabled:opacity-50 cursor-pointer"
-          >
-            <span>⚡ Generate now</span>
-          </button>
-        </div>
       </div>
     </div>
   );

@@ -45,49 +45,49 @@ export function FinalPrompt({
   };
 
   return (
-    <div className="space-y-4 pb-6">
+    <div className="space-y-4 pb-6 overflow-y-auto">
       {/* Header */}
-      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-start justify-between">
+      <div className="bg-[#1b2520] border border-emerald-500/30 rounded-2xl p-3.5 flex items-start justify-between shadow-lg">
         <div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            <h2 className="text-sm font-bold text-emerald-900">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <h2 className="text-sm font-bold text-emerald-200">
               Final Prompt Ready
             </h2>
           </div>
-          <p className="text-xs text-emerald-700 mt-0.5">
-            Grounded in confirmed brief. Methods worded as advisory instructions.
+          <p className="text-xs text-emerald-400/80 mt-0.5">
+            Grounded in confirmed brief. Methods applied as advisory instructions.
           </p>
         </div>
         <div className="text-right">
-          <span className="text-[10px] uppercase font-bold text-emerald-800/60 block">
+          <span className="text-[10px] uppercase font-bold text-emerald-400/60 block">
             Final Score
           </span>
-          <span className="text-lg font-black text-emerald-800">
+          <span className="text-xl font-black text-emerald-300">
             {meta.finalClarity}/100
           </span>
         </div>
       </div>
 
       {/* Metadata Badges */}
-      <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2 text-xs">
+      <div className="bg-[#1b1333]/90 border border-purple-500/20 rounded-2xl p-3.5 space-y-2 text-xs backdrop-blur-md">
         <div className="flex items-center justify-between">
-          <span className="text-slate-500 font-medium">Expert Role:</span>
-          <span className="font-semibold text-slate-800">{meta.expertRole}</span>
+          <span className="text-purple-300/70 font-medium">Expert Role:</span>
+          <span className="font-semibold text-white">{meta.expertRole}</span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-slate-500 font-medium">Provider:</span>
-          <span className="font-mono text-slate-700">{meta.provider}</span>
+          <span className="text-purple-300/70 font-medium">Provider:</span>
+          <span className="font-mono text-purple-200">{meta.provider}</span>
         </div>
-        <div className="pt-1 border-t border-slate-200">
-          <span className="text-slate-500 font-medium block mb-1">
+        <div className="pt-2 border-t border-purple-500/20">
+          <span className="text-purple-300/70 font-medium block mb-1.5">
             Applied Methodologies:
           </span>
           <div className="flex flex-wrap gap-1">
             {meta.methods.map((method, i) => (
               <span
                 key={i}
-                className="bg-indigo-50 border border-indigo-200 text-indigo-700 px-2 py-0.5 rounded-sm text-[11px] font-medium"
+                className="bg-purple-900/50 border border-purple-400/30 text-purple-200 px-2 py-0.5 rounded-full text-[10px] font-medium"
               >
                 {method}
               </span>
@@ -98,47 +98,53 @@ export function FinalPrompt({
 
       {/* Prompt Box */}
       <div className="relative">
-        <div className="flex justify-between items-center bg-slate-800 text-slate-200 px-3 py-2 rounded-t-xl text-xs font-semibold">
-          <span>Prompt Preview</span>
+        <div className="flex items-center justify-between px-1 mb-1.5 text-xs text-slate-300">
+          <span className="font-bold text-purple-200">Assembled Prompt:</span>
           <button
             type="button"
             onClick={handleCopy}
-            className="px-2.5 py-1 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 text-white rounded-md text-xs font-medium transition-colors cursor-pointer flex items-center gap-1 shadow-sm"
+            className="text-purple-300 hover:text-white font-medium flex items-center gap-1 cursor-pointer transition-colors"
           >
-            <span>{copied ? "✓ Copied!" : "📋 Copy Prompt"}</span>
+            {copied ? (
+              <span className="text-emerald-400 font-semibold">✓ Copied!</span>
+            ) : (
+              <span>📋 Copy to Clipboard</span>
+            )}
           </button>
         </div>
-        <textarea
-          readOnly
-          value={prompt}
-          rows={14}
-          className="w-full font-mono text-xs text-slate-800 bg-slate-900/5 border border-slate-300 rounded-b-xl p-3 focus:outline-none resize-none leading-relaxed select-all"
-        />
+
+        <pre className="bg-[#0e091e] border border-purple-500/30 rounded-2xl p-3.5 text-xs font-mono text-purple-100 whitespace-pre-wrap leading-relaxed max-h-72 overflow-y-auto shadow-inner select-all">
+          {prompt}
+        </pre>
       </div>
 
-      {/* Footer Actions */}
+      {/* Action Buttons */}
       <div className="pt-2 space-y-2">
-        {onSaveBrief && (
+        <button
+          type="button"
+          onClick={handleCopy}
+          className="w-full py-3 bg-gradient-to-r from-[#7c3aed] to-[#a855f7] hover:from-[#6d28d9] hover:to-[#9333ea] text-white rounded-xl text-sm font-bold shadow-lg shadow-purple-900/40 transition-all flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <span>{copied ? "✓ Copied to Clipboard!" : "Copy Final Prompt"}</span>
+        </button>
+
+        {isStorageEnabled && onSaveBrief && (
           <button
             type="button"
             onClick={handleSave}
-            disabled={saving || saved}
-            className={`w-full py-2.5 rounded-xl text-xs font-semibold cursor-pointer transition-colors border flex items-center justify-center gap-1.5 ${
-              saved
-                ? "bg-emerald-100 text-emerald-800 border-emerald-300"
-                : "bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200"
-            }`}
+            disabled={saved || saving}
+            className="w-full py-2.5 bg-[#21163b] hover:bg-[#2c1e4d] border border-purple-500/30 text-purple-200 rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60"
           >
-            <span>{saved ? "✓ Saved to Browser Storage!" : saving ? "Saving..." : "💾 Save Brief to Browser"}</span>
+            <span>{saved ? "✓ Saved to Browser Storage!" : saving ? "Saving..." : "📁 Save Brief to Browser"}</span>
           </button>
         )}
 
         <button
           type="button"
           onClick={onReset}
-          className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold cursor-pointer transition-colors"
+          className="w-full py-2 text-xs text-purple-300/70 hover:text-purple-100 font-medium text-center transition-colors cursor-pointer"
         >
-          ↻ Start New CoThink Session
+          ← Start New Thought
         </button>
       </div>
     </div>

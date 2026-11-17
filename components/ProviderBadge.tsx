@@ -4,14 +4,14 @@ export function ProviderBadge({ provider }: { provider?: string }) {
   const isMock = !provider || provider.toLowerCase().includes("mock");
 
   return (
-    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border shadow-sm bg-slate-50 text-slate-700 border-slate-200">
+    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide border shadow-sm bg-[#1c1433]/80 text-purple-200 border-purple-500/20 backdrop-blur-xs">
       <span
-        className={`w-2 h-2 rounded-full ${
-          isMock ? "bg-amber-500 animate-pulse" : "bg-emerald-500"
+        className={`w-1.5 h-1.5 rounded-full ${
+          isMock ? "bg-amber-400 animate-pulse" : "bg-emerald-400"
         }`}
       />
       <span>
-        {isMock ? "Mock: deterministic, no real LLM" : provider}
+        {isMock ? "Mock Mode" : provider}
       </span>
     </div>
   );

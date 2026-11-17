@@ -24,15 +24,15 @@ export function SavedBriefsPanel({
   const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
 
   return (
-    <div className="border border-slate-200 rounded-xl bg-slate-50/70 p-3 text-xs space-y-3">
+    <div className="border border-purple-500/20 rounded-2xl bg-[#17102e]/80 p-3 text-xs space-y-2.5 backdrop-blur-sm">
       {/* Header & Toggle */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="font-bold text-slate-800">
+          <span className="font-bold text-slate-200">
             📁 Saved Briefs & Autocomplete
           </span>
           {consent && briefs.length > 0 && (
-            <span className="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+            <span className="bg-purple-900/60 border border-purple-500/30 text-purple-300 text-[10px] font-bold px-1.5 py-0.2 rounded-full">
               {briefs.length}
             </span>
           )}
@@ -40,32 +40,32 @@ export function SavedBriefsPanel({
 
         {/* Consent Switch */}
         <label className="flex items-center gap-1.5 cursor-pointer select-none">
-          <span className="text-[11px] text-slate-500">
+          <span className="text-[11px] text-purple-300/70">
             {consent ? "Active" : "Off"}
           </span>
           <div
             onClick={() => onToggleConsent(!consent)}
             className={`w-8 h-4 flex items-center rounded-full p-0.5 transition-colors duration-200 ease-in-out ${
-              consent ? "bg-indigo-600 justify-end" : "bg-slate-300 justify-start"
+              consent ? "bg-purple-600 justify-end" : "bg-[#251b3f] justify-start border border-white/10"
             }`}
           >
-            <div className="bg-white w-3 h-3 rounded-full shadow-xs transform" />
+            <div className="bg-white w-3 h-3 rounded-full shadow-xs" />
           </div>
         </label>
       </div>
 
-      <p className="text-[11px] text-slate-500 leading-tight">
+      <p className="text-[11px] text-purple-300/60 leading-tight">
         Stores confirmed briefs in your browser&apos;s localStorage for ghost-text autocomplete. Zero server storage.
       </p>
 
       {/* Expanded Controls when Consent is Active */}
       {consent && (
-        <div className="space-y-2 pt-1 border-t border-slate-200">
+        <div className="space-y-2 pt-1 border-t border-purple-500/20">
           <div className="flex items-center justify-between pt-1">
             <button
               type="button"
               onClick={onLoadDemoData}
-              className="text-[11px] font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-2.5 py-1 rounded-md cursor-pointer transition-colors"
+              className="text-[10px] font-semibold text-purple-300 bg-[#251944] hover:bg-[#32215c] border border-purple-500/30 px-2.5 py-1 rounded-lg cursor-pointer transition-colors"
             >
               ⚡ Load Demo Data (6 briefs)
             </button>
@@ -74,7 +74,7 @@ export function SavedBriefsPanel({
               <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="text-[11px] text-slate-600 hover:text-slate-800 font-medium underline cursor-pointer"
+                className="text-[10px] text-purple-300/80 hover:text-purple-100 font-medium underline cursor-pointer"
               >
                 {isOpen ? "Hide List ▲" : `View Briefs (${briefs.length}) ▼`}
               </button>
@@ -83,11 +83,11 @@ export function SavedBriefsPanel({
 
           {/* List of Briefs */}
           {isOpen && briefs.length > 0 && (
-            <div className="mt-2 space-y-1.5 max-h-56 overflow-y-auto pr-1">
+            <div className="mt-2 space-y-1.5 max-h-52 overflow-y-auto pr-1">
               {briefs.map((b) => (
                 <div
                   key={b.id}
-                  className="bg-white border border-slate-200 rounded-lg p-2 flex items-start justify-between gap-2 shadow-2xs"
+                  className="bg-[#120b26] border border-purple-500/20 rounded-xl p-2 flex items-start justify-between gap-2 shadow-xs"
                 >
                   <div
                     className="flex-1 cursor-pointer"
@@ -95,24 +95,24 @@ export function SavedBriefsPanel({
                     title="Click to copy into intake box"
                   >
                     <div className="flex items-center gap-1.5 mb-0.5">
-                      <span className="font-semibold text-slate-800 line-clamp-1">
+                      <span className="font-semibold text-slate-100 line-clamp-1">
                         {b.goal}
                       </span>
-                      {b.isSyntheticSeed && (
-                        <span className="text-[9px] bg-amber-100 text-amber-800 font-bold px-1 rounded-sm uppercase">
-                          demo
-                        </span>
-                      )}
+                      <span className="text-[9px] font-mono font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-1 py-0.2 rounded-xs">
+                        {b.finalClarity}/100
+                      </span>
                     </div>
-                    <span className="text-[10px] text-slate-400">
-                      {b.expertRole} • Clarity: {b.finalClarity}/100
-                    </span>
+                    <div className="text-[10px] text-purple-300/60 flex items-center gap-2">
+                      <span>{b.expertRole}</span>
+                      <span>•</span>
+                      <span>{new Date(b.createdAt).toLocaleDateString()}</span>
+                    </div>
                   </div>
 
                   <button
                     type="button"
                     onClick={() => onDeleteBrief(b.id)}
-                    className="text-slate-400 hover:text-rose-600 p-0.5 rounded-sm cursor-pointer"
+                    className="text-purple-400/50 hover:text-rose-400 text-xs px-1 cursor-pointer transition-colors"
                     title="Delete brief"
                   >
                     ✕
@@ -120,36 +120,38 @@ export function SavedBriefsPanel({
                 </div>
               ))}
 
-              {/* Delete All Option */}
-              <div className="pt-2 flex justify-end">
+              {/* Danger Zone: Delete All */}
+              <div className="pt-2 text-right">
                 {confirmDeleteAll ? (
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-rose-600">Delete all {briefs.length} briefs?</span>
+                  <div className="flex items-center justify-end gap-2">
+                    <span className="text-[10px] text-rose-400">
+                      Delete all {briefs.length} briefs?
+                    </span>
                     <button
                       type="button"
-                      onClick={() => setConfirmDeleteAll(false)}
-                      className="text-[10px] text-slate-500 hover:underline"
+                      onClick={() => {
+                        onDeleteAll();
+                        setConfirmDeleteAll(false);
+                      }}
+                      className="px-2 py-0.5 bg-rose-600 hover:bg-rose-700 text-white rounded text-[10px] font-bold"
                     >
-                      Cancel
+                      Yes, Delete All
                     </button>
                     <button
                       type="button"
-                      onClick={async () => {
-                        await onDeleteAll();
-                        setConfirmDeleteAll(false);
-                      }}
-                      className="text-[10px] bg-rose-600 text-white px-2 py-0.5 rounded-sm font-bold"
+                      onClick={() => setConfirmDeleteAll(false)}
+                      className="text-slate-400 hover:text-slate-200 text-[10px]"
                     >
-                      Confirm
+                      Cancel
                     </button>
                   </div>
                 ) : (
                   <button
                     type="button"
                     onClick={() => setConfirmDeleteAll(true)}
-                    className="text-[10px] text-rose-500 hover:text-rose-700 underline cursor-pointer"
+                    className="text-[10px] text-rose-400/70 hover:text-rose-400 cursor-pointer"
                   >
-                    Delete All
+                    Clear All Saved Briefs
                   </button>
                 )}
               </div>
@@ -160,4 +162,3 @@ export function SavedBriefsPanel({
     </div>
   );
 }
-

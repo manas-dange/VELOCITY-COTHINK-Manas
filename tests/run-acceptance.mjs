@@ -1,7 +1,7 @@
 // Comprehensive Acceptance Test Runner for CoThink
 // Tests all criteria in PLAN.md Section 11 against the running API
 
-const BASE_URL = "http://localhost:3000/api/cothink";
+const BASE_URL = "http://127.0.0.1:3000/api/cothink";
 
 async function post(endpoint, body) {
   const res = await fetch(`${BASE_URL}/${endpoint}`, {

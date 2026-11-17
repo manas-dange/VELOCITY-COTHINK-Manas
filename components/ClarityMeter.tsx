@@ -26,21 +26,21 @@ export function ClarityMeter({ clarity, pinned = false }: ClarityMeterProps) {
     switch (status) {
       case "covered":
         return {
-          bg: "bg-emerald-50 text-emerald-700 border-emerald-300",
-          dot: "bg-emerald-500",
+          bg: "bg-emerald-950/60 text-emerald-300 border-emerald-500/30",
+          dot: "bg-emerald-400",
           icon: "✓",
         };
       case "partial":
         return {
-          bg: "bg-amber-50 text-amber-700 border-amber-300",
-          dot: "bg-amber-500",
+          bg: "bg-amber-950/60 text-amber-300 border-amber-500/30",
+          dot: "bg-amber-400",
           icon: "½",
         };
       case "missing":
       default:
         return {
-          bg: "bg-slate-50 text-slate-500 border-slate-200",
-          dot: "bg-slate-300",
+          bg: "bg-purple-950/40 text-purple-300/60 border-purple-500/20",
+          dot: "bg-purple-500/40",
           icon: "○",
         };
     }
@@ -48,8 +48,8 @@ export function ClarityMeter({ clarity, pinned = false }: ClarityMeterProps) {
 
   return (
     <div
-      className={`border rounded-xl bg-white shadow-sm p-3 transition-all duration-200 ${
-        pinned ? "sticky top-0 z-20 mb-3 border-indigo-100 bg-white/95 backdrop-blur-sm" : ""
+      className={`border rounded-2xl bg-[#1b1333]/90 border-purple-500/20 backdrop-blur-md shadow-lg p-3 transition-all duration-200 ${
+        pinned ? "sticky top-0 z-20 mb-3 border-purple-500/30" : ""
       }`}
     >
       {/* Header Row: Score & Delta */}
@@ -58,15 +58,15 @@ export function ClarityMeter({ clarity, pinned = false }: ClarityMeterProps) {
         onClick={() => setShowDetail(!showDetail)}
       >
         <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-purple-300">
             Clarity Score
           </span>
           {delta !== undefined && delta !== 0 && (
             <span
-              className={`text-xs font-bold px-1.5 py-0.5 rounded-sm ${
+              className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
                 delta > 0
-                  ? "bg-emerald-100 text-emerald-800"
-                  : "bg-rose-100 text-rose-800"
+                  ? "bg-emerald-900/60 text-emerald-300 border border-emerald-500/30"
+                  : "bg-rose-900/60 text-rose-300 border border-rose-500/30"
               }`}
             >
               {delta > 0 ? `+${delta}` : delta}
@@ -75,86 +75,72 @@ export function ClarityMeter({ clarity, pinned = false }: ClarityMeterProps) {
         </div>
 
         <div className="flex items-center gap-1.5">
-          <span className="text-xl font-black text-slate-800 tracking-tight">
+          <span className="text-lg font-black text-white tracking-tight">
             {total}
           </span>
-          <span className="text-xs text-slate-400 font-medium">/ 100</span>
-          <span className="text-xs text-slate-400 ml-1">
+          <span className="text-xs text-purple-300/60 font-medium">/ 100</span>
+          <span className="text-[10px] text-purple-400 ml-1">
             {showDetail ? "▲" : "▼"}
           </span>
         </div>
       </div>
 
-      {/* Progress Bar */}
-      <div className="w-full bg-slate-100 rounded-full h-2 mt-2 overflow-hidden">
+      {/* Progress Bar with Glowing Gradient */}
+      <div className="w-full bg-[#110b24] rounded-full h-2 mt-2 overflow-hidden border border-white/5">
         <div
-          className={`h-2 rounded-full transition-all duration-500 ease-out ${
-            total >= 70
-              ? "bg-emerald-500"
-              : total >= 40
-              ? "bg-indigo-500"
-              : "bg-amber-500"
-          }`}
-          style={{ width: `${Math.min(100, Math.max(2, total))}%` }}
+          className="h-2 rounded-full transition-all duration-500 ease-out bg-gradient-to-r from-purple-500 via-indigo-500 to-emerald-400"
+          style={{ width: `${Math.min(100, Math.max(3, total))}%` }}
         />
       </div>
 
-      {/* Dimension Chips */}
-      <div className="flex flex-wrap gap-1.5 mt-2.5">
-        {dimensionList.map((dim) => {
-          const info = dimensions[dim];
-          if (!info) return null;
-          const badge = getStatusBadge(info.status);
-          const isTarget = targetDimension === dim && info.status !== "covered";
+      {/* Target Dimension Indicator */}
+      {targetDimension && (
+        <div className="mt-2 text-[10px] text-purple-300 flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+          <span>
+            Probing: <strong className="text-white uppercase font-bold">{targetDimension}</strong>
+          </span>
+        </div>
+      )}
 
-          return (
-            <span
-              key={dim}
-              onClick={() => setShowDetail(true)}
-              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium border cursor-pointer ${
-                badge.bg
-              } ${isTarget ? "ring-2 ring-indigo-400 ring-offset-1 font-semibold" : ""}`}
-              title={`${dim.toUpperCase()}: ${info.status} (${info.score}/${info.weight})`}
-            >
-              <span className={`w-1.5 h-1.5 rounded-full ${badge.dot}`} />
-              <span className="capitalize">{dim}</span>
-              <span className="text-[10px] opacity-75">{badge.icon}</span>
-            </span>
-          );
-        })}
-      </div>
-
-      {/* Expandable Explanation Breakdown */}
+      {/* Collapsible Detail Grid */}
       {showDetail && (
-        <div className="mt-3 pt-3 border-t border-slate-100 space-y-2 text-xs">
-          <div className="font-semibold text-slate-700 flex justify-between">
-            <span>Deterministic Scoring Breakdown</span>
-            <span className="text-[10px] text-slate-400 font-normal">
-              Click header to collapse
-            </span>
+        <div className="mt-3 pt-3 border-t border-purple-500/20 space-y-1.5">
+          <div className="grid grid-cols-2 gap-1.5 text-[11px]">
+            {dimensionList.map((dim) => {
+              const info = dimensions[dim];
+              const badge = getStatusBadge(info.status);
+              const isTarget = targetDimension === dim;
+
+              return (
+                <div
+                  key={dim}
+                  className={`p-2 rounded-xl border flex items-center justify-between transition-colors ${
+                    isTarget
+                      ? "border-purple-400/50 bg-[#291b4a]"
+                      : "border-purple-500/15 bg-[#140d28]/70"
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 overflow-hidden">
+                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${badge.dot}`} />
+                    <span className="capitalize font-medium text-slate-200 truncate">
+                      {dim}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <span className="text-[10px] font-mono font-bold text-slate-300">
+                      {info.score}
+                    </span>
+                    <span
+                      className={`text-[9px] px-1 py-0.2 rounded-sm border uppercase font-bold ${badge.bg}`}
+                    >
+                      {badge.icon}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          {dimensionList.map((dim) => {
-            const info = dimensions[dim];
-            if (!info) return null;
-            return (
-              <div
-                key={dim}
-                className="flex items-start justify-between py-1 border-b border-slate-50 last:border-b-0"
-              >
-                <div>
-                  <span className="font-semibold text-slate-800 capitalize">
-                    {dim}
-                  </span>
-                  <p className="text-slate-500 text-[11px] mt-0.5">{info.reason}</p>
-                </div>
-                <div className="text-right whitespace-nowrap ml-2">
-                  <span className="font-mono font-medium text-slate-700">
-                    {info.score} / {info.weight}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
         </div>
       )}
     </div>
