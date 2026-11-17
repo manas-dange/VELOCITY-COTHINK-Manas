@@ -168,6 +168,10 @@ All interviewing behaviors and prompt construction logic are easily tuned withou
 
 ## 💾 Additive Feature: Saved Briefs & Ghost-Text Autocomplete
 
+LLD : 
+<img width="1260" height="646" alt="Screenshot 2026-11-17 at 5 58 46 PM" src="https://github.com/user-attachments/assets/9620c69e-857d-467b-8dc8-0f0a885507a0" />
+
+
 ### What Is Stored & Where
 - Confirmed briefs are stored strictly in the client&apos;s browser **`localStorage`** under the key `cothink_saved_briefs_v1`.
 - **Stored Shape**: `id`, `goal`, `context`, `constraints`, `expertRole`, `finalPrompt`, `finalClarity`, `keywords`, `createdAt`, `isSyntheticSeed`.
